@@ -1,11 +1,11 @@
-#simple-server
+# simple-server
 
-##install
+## install
 ```console
-$ npm install chalk
+$ npm i simple-server-lyx -g
 ```
 
-##usage
+## usage
 
 ```console
 $ cd [folder-path]
@@ -24,3 +24,5 @@ $ simple-server -p 3000 //Specify a port
 ```console
 $ simple-server -h 'localhost' // Specify a host
 ```
+Note:If you want to use host except for "localhost" or "127.0.0.1",you need to configure the host file first.
+Because essentially it's always accessing local server. 
