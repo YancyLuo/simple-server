@@ -69,6 +69,9 @@ module.exports = async function (req, res, config) {
   } catch (err) {
     res.statusCode = 404
     res.setHeader('Content-Type', 'text/plain')
+    if (path.basename(filepath) === 'favicon.ico') {
+      return
+    }
     console.error(chalk.redBright(err.toString()))
     res.end('No resources were found')
   }
