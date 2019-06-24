@@ -1,6 +1,6 @@
 {
-  "name": "simple-server-lyx",
-  "version": "1.0.1",
+  "name": "simple-server-l",
+  "version": "1.0.0",
   "description": "",
   "main": "src/app.js",
   "bin": {
