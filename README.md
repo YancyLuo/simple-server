@@ -2,7 +2,7 @@
 
 ## install
 ```console
-$ npm i simple-server -g
+$ npm i simple-server-lyx -g
 ```
 
 ## usage
