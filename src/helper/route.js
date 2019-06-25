@@ -12,7 +12,7 @@ const cacheFunc = require('./cache')
 module.exports = async function (req, res, config) {
   const {host, port, root, compress} =config
   const addr = `http://${host}:${port}`
-  const filepath = path.join(root, req.url)
+  const filepath = decodeURI(path.join(root, req.url))
   try {
     const stats = await stat(filepath)
     const useCache = cacheFunc(stats, req, res)
@@ -22,7 +22,7 @@ module.exports = async function (req, res, config) {
       return
     }
     if (stats.isFile()) {
-      res.setHeader('Content-type', mime.getType(filepath) ? mime.getType(filepath) : 'text/plain')
+      res.setHeader('Content-type', [mime.getType(filepath) ? mime.getType(filepath) : 'text/plain', 'charset=UTF-8'])
       // fs.readFile(filepath, (err, data) => {
       //   if (err) throw err
       //   res.end(data)
@@ -31,7 +31,7 @@ module.exports = async function (req, res, config) {
       let rs = null
       if (range.code === 200) {
         res.statusCode = 200
-        rs = fs.createReadStream(filepath)
+        rs = fs.createReadStream(filepath,{encoding: 'utf-8'})
       }
       if (range.code === 206) {
         res.statusCode = 206
@@ -42,14 +42,14 @@ module.exports = async function (req, res, config) {
       }
       if (filepath.match(compress)) {
         rs = compressFunc(rs, req, res)
-      }
+      }    
       rs.pipe(res)
     } else if (stats.isDirectory()) {
       res.statusCode = 200
       res.setHeader('Content-type', 'text/html')
       const files = await readdir(filepath)
       let items = files.map( async (file) => {
-        let href = addr + req.url + '/' + file
+        let href = addr + req.url + '/' + encodeURI(file)
         let newHref = href.replace(/([^:])\/{2}/g, '$1/')
         let type = ''
         const fileStats = await stat(filepath + '/' + file)
@@ -62,6 +62,7 @@ module.exports = async function (req, res, config) {
         return `<li>[${type}]&nbsp;&nbsp;<a href='${newHref}'>${file}</a></li>`
       })
       Promise.all(items).then(lis => {
+        res.write('<meta charset="UTF-8">')
         res.end(`<title>${path.basename(filepath)}</title><ul>${lis.join(' ')}</ul>`)
       })
       
