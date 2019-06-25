@@ -31,7 +31,7 @@ module.exports = async function (req, res, config) {
       let rs = null
       if (range.code === 200) {
         res.statusCode = 200
-        rs = fs.createReadStream(filepath,{encoding: 'utf-8'})
+        rs = fs.createReadStream(filepath)
       }
       if (range.code === 206) {
         res.statusCode = 206
